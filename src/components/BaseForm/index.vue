@@ -391,29 +391,29 @@ export default {
 </script>
  
 <style lang="scss" scoped>
-// ::v-deep .el-input {
-//   width: 220px;
-// }
+::v-deep .el-input {
+  width: 220px;
+}
 
-// ::v-deep .el-select {
-//   width: 220px;
-// }
+::v-deep .el-select {
+  width: 220px;
+}
 
-// ::v-deep .el-date-editor.el-input {
-//   width: 220px;
-// }
-// ::v-deep .el-date-editor .el-range-separator {
-//   width: 20px !important;
-// }
-// ::v-deep .el-range-editor--small.el-input__inner {
-//   width: 400px;
-// }
+::v-deep .el-date-editor.el-input {
+  width: 220px;
+}
+::v-deep .el-date-editor .el-range-separator {
+  width: 20px !important;
+}
+::v-deep .el-range-editor--small.el-input__inner {
+  width: 400px;
+}
 
-// .el-textarea {
-//   width: 400px;
-// }
+.el-textarea {
+  width: 400px;
+}
 
-// .hide ::v-deep .el-upload--picture-card {
-//   display: none;
-// }
+.hide ::v-deep .el-upload--picture-card {
+  display: none;
+}
 </style>

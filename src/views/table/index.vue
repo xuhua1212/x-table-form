@@ -1,15 +1,17 @@
 <template>
   <div class="app-container">
     <BaseTable
+      :total="total"
       :tableData="tableData"
       :columObj="columObj"
-      :pageObj="pageObj"
+      :queryParams="queryParams"
       @rowOperation="rowOperation"
       @switchChange="switchChange"
       @editInputBlur="editInputBlur"
       @rowClick="rowClick"
       @handleSizeChange="handleSizeChange"
       @handleCurrentChange="handleCurrentChange"
+      @handleSelectionChange="handleSelectionChange"
     ></BaseTable>
   </div>
 </template>
@@ -22,23 +24,19 @@ export default {
   components: { BaseTable },
   data() {
     return {
-      pageObj: {
-        //分页对象
-        position: "right", //分页组件位置
-        total: 0,
-        pageData: {
-          page: 1,
-          size: 10,
-        },
+      total: 0,
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
       },
       tableData: [],
       columObj: {
         loading: true,
-        // 选择框
+        // 序号选择框
         selection: true,
-        // 选择框根据条件是否可选
+        // 序号选择框根据条件是否可选
         selectable: (row, index) => {
-          if (row.switchs) {
+          if (row.isSwitch) {
             return true;
           }
         },
@@ -111,7 +109,7 @@ export default {
             align: "center",
             sortable: false,
           },
-          //如果为操作列,则需要填写需要的操作按钮,类型为Object。operation(操作类型,可选edit,delete,see),type(按钮样式,参考el—botton类型),label(按钮文字)icon(参考el-icon),color(字体颜色)
+          //如果为操作列,则需要填写需要的操作按钮,类型为Object。operation(操作类型,可选edit,del,look),type(按钮样式,参考el—botton类型),label(按钮文字)icon(参考el-icon),color(字体颜色)
           {
             isOperation: true,
             label: "操作",
@@ -130,7 +128,7 @@ export default {
                 },
               },
               {
-                operation: "delete",
+                operation: "del",
                 type: "text",
                 label: "删除",
                 icon: "",
@@ -140,8 +138,8 @@ export default {
                 },
               },
               {
-                operation: "see",
-                type: "primary",
+                operation: "look",
+                type: "warning",
                 label: "查看",
                 icon: "",
                 color: "",
@@ -162,19 +160,39 @@ export default {
     async getList() {
       const {
         data: { total, items },
-      } = await getList();
-      this.pageObj.total = total;
+      } = await getList(this.queryParams);
+      this.total = total;
       this.tableData = items;
       this.columObj.loading = false;
     },
-    rowOperation(row, $index, now) {
-      console.log(row, $index, now);
+    // 按钮click callback
+    rowOperation(row, $index, type) {
+      const typeEnum = {
+        edit: "handleEdit",
+        del: "handleDel",
+        look: "handleLook",
+      };
+      this[typeEnum[type]](row, $index);
     },
+    handleEdit(row, index) {
+      console.log("编辑", row, index);
+    },
+    handleDel(row, index) {
+      console.log("删除", row, index);
+    },
+    handleLook(row, index) {
+      console.log("查看", row, index);
+    },
+    // 序号选择框值
+    handleSelectionChange(val) {
+      console.log("handleSelectionChange ~ val", val);
+    },
+    // 开关change callback
     switchChange(row, $index, prop) {
       console.log(row, $index, prop);
     },
+    // 点击行触发，编辑点击的所在列，排除selection
     rowClick(row, column, event) {
-      // 点击行触发，编辑点击的所在列，排除selection选择框
       if (column.type != "selection") {
         this.columObj.columnData[column.index].editRow = row.rowIndex;
       }
@@ -184,12 +202,14 @@ export default {
     },
     //页码变化
     handleCurrentChange(e) {
-      this.pageObj.page = e;
+      this.queryParams.pageNum = e;
+      this.getList();
     },
     //条数变化
     handleSizeChange(e) {
-      this.pageObj.size = e;
-      this.pageObj.page = 1;
+      this.queryParams.pageSize = e;
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
   },
 };

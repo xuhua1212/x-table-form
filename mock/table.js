@@ -10,7 +10,7 @@ const data = Mock.mock({
       count: "@integer(0, 100)",
       content: "@sentence(20, 30)",
       image: "@image(100x100, @color)",
-      switchs: "@boolean",
+      isSwitch: "@boolean",
       objmsg: "@cword(5, 10)",
       status: { msg: "@boolean" },
     },
@@ -19,15 +19,16 @@ const data = Mock.mock({
 
 module.exports = [
   {
-    url: "/vue-admin-template/table/list",
+    url: "/table/list",
     type: "get",
     response: (config) => {
-      const items = data.items;
+      const {  pageNum = 1, pageSize = 10 } = config.query
+      const pageList =  data.items.filter((item, index) => index < pageSize * pageNum && index >= pageSize * (pageNum - 1))
       return {
         code: 20000,
         data: {
-          total: items.length,
-          items: items,
+          total: data.items.length,
+          items: pageList,
         },
       };
     },

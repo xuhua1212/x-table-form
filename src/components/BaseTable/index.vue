@@ -12,6 +12,7 @@
       v-loading="columObj.loading"
       :row-class-name="tableRowClassName"
       @row-click="rowClick"
+      @selection-change="handleSelectionChange"
     >
       <!-- 选择框是否开启，selectable控制是否单行禁用 -->
       <el-table-column
@@ -89,17 +90,16 @@
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <div class="page_div" :style="{ textAlign: pageObj.position || 'right' }">
+    <div class="page_div" :style="{ textAlign: pagePosition }" v-if="total > 0">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :hide-on-single-page="false"
-        :current-page="pageObj.pageData.page"
+        :current-page="queryParams.pageNum"
         :page-sizes="[10, 15, 20, 30, 50]"
-        :page-size="pageObj.pageData.size"
+        :page-size="queryParams.sizeSize"
+        :layout="pageLayout"
         background
-        layout="total,sizes,prev, pager, next"
-        :total="pageObj.total"
+        :total="total"
       >
       </el-pagination>
     </div>
@@ -117,6 +117,25 @@ export default {
     },
   },
   props: {
+    // 分页布局
+    pageLayout: {
+      type: String,
+      default: "total, sizes, prev, pager, next, jumper",
+    },
+    // 分页位置.可选left,right,center, 默认right
+    pagePosition: {
+      type: String,
+      default: "right",
+    },
+    total: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    queryParams: {
+      type: Object,
+      required: true,
+    },
     tableData: {
       type: Array,
       required: true,
@@ -128,30 +147,29 @@ export default {
     //columObj.type(如果为""空，就不会加载多选框，或者index编号),lazy(是否支持懒加载)
     //columnData.columType(列类型,可选text(默认为普通文字模式),input(input可编辑框),switch(switch开关),image(图片),operation(操作按钮))
     //prop(参数),label(列名),width(宽度),align(对齐方式),sortable(是否支持排序)
-    //如果为操作列,则需要填写需要的操作按钮,类型为Object。operation(操作类型,可选edit,delete,see),type(按钮样式,参考el—botton类型),label(按钮文字)icon(参考el-icon),color(字体颜色)
-    pageObj: {
-      type: Object,
-      required: true,
-    },
+    //如果为操作列,则需要填写需要的操作按钮,类型为Object。operation(操作类型,可选edit,del,look),type(按钮样式,参考el—botton类型),label(按钮文字)icon(参考el-icon),color(字体颜色)
   },
   data() {
-    let readUploadFileUrl = "";
     return {
-      viewUrl: readUploadFileUrl,
+      viewUrl: "", // 文件,图片等预览地址
     };
   },
   methods: {
+    // 复选框
+    handleSelectionChange(val) {
+      this.$emit("handleSelectionChange", val);
+    },
     // 行操作
-    rowOperation(row, $index, now) {
-      this.$emit("rowOperation", row, $index, now);
+    rowOperation(row, $index, type) {
+      this.$emit("rowOperation", row, $index, type);
     },
     // switchChange调用
     switchChange(row, $index, prop) {
       this.$emit("switchChange", row, $index, prop);
     },
-    // 帮助点击行，获取点击的下标
+    // 添加行class
     tableRowClassName({ row, rowIndex }) {
-      row.rowIndex = rowIndex;
+      this.$emit("tableRowClassName", row, rowIndex);
     },
     // 点击行
     rowClick(row, column, event) {
