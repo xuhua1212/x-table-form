@@ -1,6 +1,8 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <sidebar class="sidebar-container" />
+    <el-aside width="200px">
+      <sidebar class="sidebar-container" />
+    </el-aside>
     <div class="main-container">
       <app-main />
     </div>
@@ -77,7 +79,9 @@ export default {
   width: calc(100% - #{$sideBarWidth});
   transition: width 0.28s;
 }
-
+.sidebar-container {
+  widows: 250px;
+}
 .hideSidebar .fixed-header {
   width: calc(100% - 54px);
 }
