@@ -69,6 +69,18 @@ export const constantRoutes = [
       },
     ],
   },
+  {
+    path: "/sql",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "Sql",
+        component: () => import("@/views/sql"),
+        meta: { title: "sql", icon: "form" },
+      },
+    ],
+  },
 
   // 404 page must be placed at the end !!!
   { path: "*", redirect: "/404", hidden: true },
