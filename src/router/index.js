@@ -89,7 +89,7 @@ export const constantRoutes = [
         path: "index",
         name: "SortTable",
         component: () => import("@/views/sortTable"),
-        meta: { title: "SortTable", icon: "form" },
+        meta: { title: "拖拽table", icon: "form" },
       },
     ],
   },
