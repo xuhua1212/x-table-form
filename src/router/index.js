@@ -81,6 +81,18 @@ export const constantRoutes = [
       },
     ],
   },
+  {
+    path: "/sortTable",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "SortTable",
+        component: () => import("@/views/sortTable"),
+        meta: { title: "SortTable", icon: "form" },
+      },
+    ],
+  },
 
   // 404 page must be placed at the end !!!
   { path: "*", redirect: "/404", hidden: true },
