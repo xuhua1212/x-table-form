@@ -97,7 +97,7 @@ export default {
       const wrapperTr = document.querySelector(
         ".draggable .el-table__header-wrapper tr"
       );
-      this.sortable = Sortable.create(wrapperTr, {
+      Sortable.create(wrapperTr, {
         animation: 180,
         delay: 0,
         onEnd: (evt) => {
