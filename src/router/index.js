@@ -93,6 +93,18 @@ export const constantRoutes = [
       },
     ],
   },
+  {
+    path: "/three",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "Three",
+        component: () => import("@/views/three/three"),
+        meta: { title: "threejs", icon: "form" },
+      },
+    ],
+  },
 
   // 404 page must be placed at the end !!!
   { path: "*", redirect: "/404", hidden: true },
